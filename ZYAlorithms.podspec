@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZYAlorithms"
-  spec.version      = "v1.0.0"
+  spec.version      = "1.0.0"
   spec.summary      = "Algorithm code in Swift."
 
   # This description is used to generate tags and improve search results.
@@ -80,7 +80,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source = { :git => "https://github.com/Willson1989/ZYAlorithms.git", :tag => "#{spec.version}" }
+  spec.source = { :git => "https://github.com/Willson1989/ZYAlorithms.git", :tag => spec.version.to_s }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -133,6 +133,6 @@ Pod::Spec.new do |spec|
   spec.requires_arc = true
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  spec.dependency 'RxSwift', '~> 5.0.0'
+  # spec.dependency 'RxSwift', '~> 5.0.0'
 
 end
