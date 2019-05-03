@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <script>
+
+
+        /*
+        // -------------- 克隆图 leetCode #133
+            https://leetcode-cn.com/problems/clone-graph/
+            克隆一张无向图，图中的每个节点包含一个 label （标签）和一个 neighbors （邻接点）列表 。
+            OJ的无向图序列化：
+            节点被唯一标记。 我们用 # 作为每个节点的分隔符，用 , 作为节点标签和邻接点的分隔符。
+            例如，序列化无向图 {0,1,2#1,2#2,2}。
+            该图总共有三个节点, 被两个分隔符  # 分为三部分。 
+
+            第一个节点的标签为 0，存在从节点 0 到节点 1 和节点 2 的两条边。
+            第二个节点的标签为 1，存在从节点 1 到节点 2 的一条边。
+            第三个节点的标签为 2，存在从节点 2 到节点 2 (本身) 的一条边，从而形成自环。
+            我们将图形可视化如下：
+
+                1
+               / \
+              /   \
+             0 --- 2
+                  / \
+                  \_/
+        */
+        function UndirectedGraphNode(label) {
+            this.label = label;
+            this.neighbors = [];   // Array of UndirectedGraphNode
+        };
+
+        function Queue() {
+            this.data = []
+        };
+        Queue.prototype.front = function () {
+            if (this.isEmpty()) {
+                return null
+            }
+            return this.data[0]
+        };
+
+        Queue.prototype.isEmpty = function () {
+            return this.data.length <= 0
+        };
+
+        Queue.prototype.enqueue = function (item) {
+            if (item == null) {
+                return
+            }
+            this.data.push(item)
+        };
+
+        Queue.prototype.dequeue = function () {
+            if (this.isEmpty()) {
+                return
+            }
+            this.data.shift()
+        };
+
+        Queue.prototype.size = function () {
+            return this.data.length
+        };
+
+        var cloneGraph = function (graph) {
+            return cloneGraph_dfs(graph)
+        }
+
+        // bfs
+        /**
+         * @param {UndirectedGraphNode} graph
+         * @return {UndirectedGraphNode}
+         */
+
+        var cloneGraph_bfs = function (graph) {
+            if (graph == null) {
+                return null
+            }
+            var map = {}
+            var queue = new Queue()
+            queue.enqueue(graph)
+            var newRoot = new UndirectedGraphNode(graph.label)
+            map[graph.label] = newRoot
+            while (!queue.isEmpty()) {
+                let currNode = queue.front()
+                var currRoot = map[currNode.label]
+                for (let key in currNode.neighbors) {
+                    var subNode = currNode.neighbors[key]
+                    let mapSubNode = map[subNode.label]
+                    if (mapSubNode == null) {
+                        var newNode = new UndirectedGraphNode(subNode.label)
+                        currRoot.neighbors.push(newNode)
+                        map[newNode.label] = newNode
+                        queue.enqueue(subNode)
+                    } else {
+                        currRoot.neighbors.push(mapSubNode)
+                    }
+                }
+                queue.dequeue()
+            }
+            return map[graph.label]
+        };
+
+        var cloneGraph_dfs = function (graph) {
+            var map = {}
+            return __cloneGraph_dfs(graph, map)
+        }
+
+        var __cloneGraph_dfs = function (node, map) {
+            if (node == null) {
+                return null
+            }
+            if (map[node.label] == null) {
+                var newNode = new UndirectedGraphNode(node.label)
+                map[node.label] = newNode
+                for (let i = 0; i < node.neighbors.length; i++) {
+                    const neibNode = node.neighbors[i];
+                    newNode.neighbors.push(__cloneGraph_dfs(neibNode, map))
+                }
+            }
+            return map[node.label]
+        }
+
+
+        /**
+         * 目标和 leetCode #494
+         * https://leetcode-cn.com/problems/target-sum/submissions/
+         */
+        /**
+         * @param {number[]} nums
+         * @param {number} S
+         * @return {number}
+         */
+        var findTargetSumWays = function (nums, S) {
+            return _findTargetSumWays(0, -1, S, nums)
+        };
+
+        var _findTargetSumWays = function (node, step, target, nums) {
+            let stp = step + 1
+            let num = nums[stp]
+            if(stp >= nums.length-1) {
+                let c1 = (node + num == target) ? 1 : 0
+                let c2 = (node - num == target) ? 1 : 0
+                return c1 + c2
+            }
+            let count1 = _findTargetSumWays(node+num, stp, target, nums)
+            let count2 = _findTargetSumWays(node-num, stp, target, nums)
+            return count1 + count2
+        };
+
+        let n0 = new UndirectedGraphNode(0);
+        let n1 = new UndirectedGraphNode(1);
+        let n4 = new UndirectedGraphNode(4);
+        let n10 = new UndirectedGraphNode(10);
+        let n9 = new UndirectedGraphNode(9);
+        let n8 = new UndirectedGraphNode(8);
+        let n11 = new UndirectedGraphNode(11);
+        let n7 = new UndirectedGraphNode(7);
+        let n6 = new UndirectedGraphNode(6);
+        let n5 = new UndirectedGraphNode(5);
+        let n3 = new UndirectedGraphNode(3);
+        let n2 = new UndirectedGraphNode(2);
+
+        n0.neighbors = [n1, n4, n9];
+        n1.neighbors = [n0, n10, n9];
+        n4.neighbors = [n0, n9, n8, n11];
+        n9.neighbors = [n0, n1, n4, n5];
+        n10.neighbors = [n1, n7, n6];
+        n7.neighbors = [n10];
+        n6.neighbors = [n10];
+        n5.neighbors = [n9, n11];
+        n11.neighbors = [n5, n3, n4];
+        n8.neighbors = [n4, n3, n2];
+        n3.neighbors = [n11, n8];
+        n2.neighbors = [n8];
+
+        let newNode = cloneGraph(n0);
+        console.log(newNode);
+
+
+    </script>
+
+</body>
+
+</html>
